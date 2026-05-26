@@ -12,26 +12,21 @@ Circuit Schematic was designed to withstand noisy RF Radiation, and noise from t
 ### Assumptions made:
 - 5V & 12V Power rails
 - Operating Freq ~ 30Hz (Should be sufficent for just pressure readings)
-- We would be dealing with noise frequencies from the RF systems onboard and the 400Hz AC power noise coming from the planes systems.
----
-
-```
-[LT3092(Current source)] -> [NPH-8-200AH Sensor] -> [Input Differential Low pass(10kHz) RC Filter] -> [INA128 Instrumentation Amplifier] -> [Output Salen Key Filter(40Hz)] -> [Signal Output]
-```
-
-
 
 ## Signal Chain
+![Signal Chain](images/signal_chain.png)
 
 ### 1. LT3092 Current Source
 Current source designed to give consistent excitation current to the NPH-8-200AH
+- 50ppm/C, so very temperature resistant
 - Iout = 10uA * (Rset/Rout)
 - R set = 15K, Rout = 100
 - I out = 1.5mA
 
 ### 2. Pressue Sensor NPH-8-200AH
   Absolute pressure sensor, 0–200 PSI range
-- Wheatstone bridge
+- Wheatstone bridge, 5K internal bridge resistance
+  - Needs 7.5V of headroom at 1.5mA
 - TO-8 package, through-hole, no bottom cylinder
 - Powered via 1.5 mA constant current
 - Outputs ~ 100 mV differential at 1.5 mA when excited with 10V
@@ -41,23 +36,27 @@ Current source designed to give consistent excitation current to the NPH-8-200AH
   Low-pass filter on differential input lines before going into the INA for RF and EMI protection
 - Common Mode Cutoff frequency ~10KHz
 - Differential Mode Cutoff frequency ~470Hz
+- Important to have the differential cap because ceramic capacitors have up to 20% tollerance, so because the diff cap is significantly larger, it dominates and hides any discrepancies.
 - R7 = R6 = 10K, C9 = C10 = 1.6nF, C18 = 16nF
 
-### 4. REF3025 Voltage source
-  Provides reference voltage to INA128 allowing us to bias the signal to 2.5V
-- Source creates a voltage of 2.5V even through supply voltage fluctuations
+### 4. REF3012 Voltage source
+  Provides reference voltage to INA128 allowing us to bias the signal to 1.25V
+- 50ppm/C
+- Source maintains a voltage of 1.25V even through supply voltage fluctuations
+- Very low output impedance
 - Highly Temperature stable 
 
 ### 5. Instrumentation Amplifier, INA128
   Amplifies differential Wheatstone bridge output
-- Gain set by R_G(1.6KΩ) (pins 1 and 8): G = 1 + 50kΩ / 2.5KΩ ≈ 20
-- R_G value: 2.5KΩ
-- REF pin set to 2.5V via REF 3025 Voltage source
+- Gain set by R_G(1.6K) (pins 1 and 8): G = 1 + 50K/ 1.6K ≈ 31
+- R_G value: 1.6KΩ
+- REF pin set to 1.25V via REF 3012 Voltage source
 
 ### 6. Output Sallen Key Filter
-  OPA188 based Salen Key Low-pass filter after amplification
+  OPA188 based Sallen Key Low-pass filter after amplification
 - Cutoff frequency: 40 Hz
-- Provides attenuation of 40dB at 400 Hz 
+- Due to second order falloff, provides attenuation of 40dB at 400 Hz 
+- Important to block out 400Hz, because that's the frequency of Airplane AC power
 
 
 
