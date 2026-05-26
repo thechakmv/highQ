@@ -39,7 +39,8 @@ Current source designed to give consistent excitation current to the NPH-8-200AH
 
 ### 3. Input Differential RC Low Pass Filter
   Low-pass filter on differential input lines before going into the INA for RF and EMI protection
-- Cutoff frequency ~10KHz
+- Common Mode Cutoff frequency ~10KHz
+- Differential Mode Cutoff frequency ~470Hz
 - R7 = R6 = 10K, C9 = C10 = 1.6nF, C18 = 16nF
 
 ### 4. REF3025 Voltage source
@@ -49,8 +50,8 @@ Current source designed to give consistent excitation current to the NPH-8-200AH
 
 ### 5. Instrumentation Amplifier, INA128
   Amplifies differential Wheatstone bridge output
-- Gain set by R_G(1.6KΩ) (pins 1 and 8): G = 1 + 50kΩ / 1.6KΩ ≈ 32
-- R_G value: 1.6KΩ
+- Gain set by R_G(1.6KΩ) (pins 1 and 8): G = 1 + 50kΩ / 2.5KΩ ≈ 20
+- R_G value: 2.5KΩ
 - REF pin set to 2.5V via REF 3025 Voltage source
 
 ### 6. Output Sallen Key Filter
